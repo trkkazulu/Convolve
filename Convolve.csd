@@ -29,9 +29,9 @@ rslider bounds(365, 11, 70, 70),        text("Mix"),            colour(115, 10, 
 rslider bounds(430, 11, 70, 70),        text("Level"),          colour(115, 10, 10), trackercolour(255,255,150), outlinecolour( 75, 35,  0), textcolour(250,250,250),  channel("level"),       range(0, 1.00, 0.4)
 
 filebutton bounds( 10, 90, 90, 25), text("Open File","Open File"), fontcolour("white") channel("filename"), shape("ellipse")
-soundfiler bounds(110, 90,380,125), channel("beg","len"), identchannel("ImpulseFile"),  colour(0, 255, 255, 255), fontcolour(160, 160, 160, 255)
+soundfiler bounds(110, 90, 380, 125), channel("beg","len"), identchannel("ImpulseFile"),  colour(0, 255, 255, 255), fontcolour(160, 160, 160, 255)
 label      bounds(114, 92,300, 16), text(""), align(left), colour(0,0,0,0), fontcolour(255,255,255,150), identchannel("stringbox")
-label      bounds(114, 92,350, 16), text("First open a short stereo impulse sound file..."), align(left), fontcolour(255,255,255,150), visible(1), identchannel("InstructionID")
+label      bounds(114, 92, 350, 16), text("First open a short stereo impulse sound file..."), align("left"), fontcolour(255, 255, 255, 150), , identchannel("InstructionID")
 }
 </Cabbage>
 
@@ -153,8 +153,8 @@ instr	2	;CONVOLUTION REVERB INSTRUMENT
 	kCompRat       init	1 			;IF THIS IS LEFT UNINITIALISED A CRASH WILL OCCUR! 
 
 	
-	;ainL,ainL	ins				;READ STEREO AUDIO INPUT
-	ainL	diskin2	"bassClipCR.wav",1,0,1	;USE A SOUND FILE FOR TESTING
+	ainL	ins				;READ MONO AUDIO INPUT
+;	ainL	diskin2	"bassClipCR.wav",1,0,1	;USE A SOUND FILE FOR TESTING
 	ainMix		sum	ainL,ainL
 	
 	;CREATE REVERSED TABLES
