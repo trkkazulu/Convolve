@@ -1,11 +1,5 @@
-; ConvolutionReverb.csd
-; Written by Iain McCurdy, 2012.
-; 
-; ------------------
-; You are encouraged to experiment with different impulse files.
-; You can try this one to start with: http://www.iainmccurdy.org/CsoundRealtimeExamples/SourceMaterials/Stairwell.wav
-; You can find some here: http://www.openairlib.net/
-; NOTE THAT ZERO LATENCY (or close to zero) CONV0LUTION WILL NOT BE POSSIBLE.
+; Convolve.csd
+; Written by Jair-Rohm Parker Wells 2019 after Iain McCurdy' ConvolutionReverb 2012.
 ; 
 ; Instructions
 ; ------------
@@ -17,9 +11,12 @@
 ; Increase 'iplen' (must be a power of 2) if experiencing performance problems, or reduce it to reduce latency.
 ; 'Delay OS' fine tunes the delay applied to the dry signal. Normally this should be zero but adjust it to modify how the dry signal lines up with the convoluted signal.
 
+; Make versions of this that have hardcoded convolution files. 
+
 <Cabbage>
-form caption("Convolution Reverb") size(505,230), pluginid("Conv") style("legacy")
-image bounds(0, 0, 505,230), colour(135, 30, 30,220), shape("rounded"), outlinecolour(255,255,150), outlinethickness(4) 
+form caption("Convolver") size(505,230), pluginid("Conv") style("legacy")
+
+image bounds(0, 0, 505, 230), colour(135, 30, 30, 220), , outlinecolour(255, 255, 150, 255), outlinethickness(4) corners(5)
 label   bounds( 29,  10, 55, 12),       text("direction:"), fontcolour(250,250,250)
 button  bounds( 10,  22, 90, 20),       text("forward","backward"),                            channel("FwdBwd"), value(0), fontcolour(250,250,250)
 label   bounds( 33,  43, 45, 12),       text("resize:"), fontcolour(250,250,250)
@@ -53,7 +50,7 @@ nchnls 		= 	2	;NUMBER OF CHANNELS (2=STEREO)
 
 ;Author: Iain McCurdy (2012)
 
-giImpulse	ftgen	1,0,0,1,"Stairwell.wav",0,0,0	; load stereo file
+;giImpulse	ftgen	1,0,0,1,"Stairwell.wav",0,0,0	; load stereo file
 giImpulse	ftgen	1,0,2,-2,0
 giDisplay	ftgen	2,0,ftlen(giImpulse),2,0						; display table table
 tableicopy 2, 1
