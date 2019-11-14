@@ -11,7 +11,7 @@
 ; Increase 'iplen' (must be a power of 2) if experiencing performance problems, or reduce it to reduce latency.
 ; 'Delay OS' fine tunes the delay applied to the dry signal. Normally this should be zero but adjust it to modify how the dry signal lines up with the convoluted signal.
 
-; Make versions of this that have hardcoded convolution files. 
+; Make versions of this that have hardcoded a convolution file. 
 
 <Cabbage>
 form caption("Convolver") size(505,230), pluginid("Conv") style("legacy")
@@ -127,17 +127,22 @@ opcode FileNameFromPath,S,S		; Extract a file name (as a string) from a full pat
 	xout	Sname			; Send it back to the caller instrument
 endop
 
+
 instr	1
-	gSfilepath	chnget	"filename"
-	kNewFileTrg	changed	gSfilepath		; if a new file is loaded generate a trigger
-	if kNewFileTrg==1 then				; if a new file has been loaded...
+	;gSfilepath	chnget	"filename"
+	gSfilepath = "miraj_trim.wav"
+;	kNewFileTrg	changed	gSfilepath		; if a new file is loaded generate a trigger
+    kNewFileTrg = 1 
+;	if kNewFileTrg==1 then				; if a new file has been loaded...
 	 event	"i",99,0,0				; call instrument to update sample storage function table 
-	endif
+;	endif
 	
 	if trigger:k(gkReady,0.5,0)==1 then		; when a file is loaded for the first time do this conditional branch...
 	 event	"i",2,0,3600*24*7			; start the convolution instrument
 	endif
 endin
+
+
 
 instr	2	;CONVOLUTION REVERB INSTRUMENT
 	chnset	"visible(0)","InstructionID"		; hide the instruction
@@ -156,7 +161,7 @@ instr	2	;CONVOLUTION REVERB INSTRUMENT
 
 ; ***************INPUT SECTION***********************************************	
 	ainL,ainR	ins			;READ MONO AUDIO INPUT
-;	ainL	diskin2	"bassClipCR.wav",1,0,1	;USE A SOUND FILE FOR TESTING
+;	ainL, ainR	diskin2	"stereoBass.wav",1,0,1	;USE A STEREO SOUND FILE FOR TESTING
 	ainMix		sum	ainL,ainR
 ;****************************************************************************
 
@@ -247,6 +252,7 @@ endin
 
 <CsScore>
 i 1 0 [3600*7*24] 
+
 </CsScore>
 
 </CsoundSynthesizer>
