@@ -151,12 +151,16 @@ instr	2	;CONVOLUTION REVERB INSTRUMENT
 	kskipsamples	chnget	"skipsamples"
 	kDelayOS	chnget	"DelayOS"
 	kCompRat       init	1 			;IF THIS IS LEFT UNINITIALISED A CRASH WILL OCCUR! 
+	
+	
 
-	
-	ainL	ins				;READ MONO AUDIO INPUT
+; ***************INPUT SECTION***********************************************	
+	ainL,ainR	ins			;READ MONO AUDIO INPUT
 ;	ainL	diskin2	"bassClipCR.wav",1,0,1	;USE A SOUND FILE FOR TESTING
-	ainMix		sum	ainL,ainL
-	
+	ainMix		sum	ainL,ainR
+;****************************************************************************
+
+		
 	;CREATE REVERSED TABLES
 	irev	tab_reverse	giImpulse
         
@@ -184,25 +188,25 @@ instr	2	;CONVOLUTION REVERB INSTRUMENT
 	if kFwdBwd==0&&kresize==0 then
 	 aL,aR	ftconv	ainMix, itab, iplen,iskipsamples, iirlen		;CONVOLUTE INPUT SOUND
 	 adelL	delay	ainL, abs((iplen/sr)+i(kDelayOS)) 	;DELAY THE INPUT SOUND ACCORDING TO THE BUFFER SIZE
-	 adelR	delay	ainL, abs((iplen/sr)+i(kDelayOS)) 	;DELAY THE INPUT SOUND ACCORDING TO THE BUFFER SIZE
+	 adelR	delay	ainR, abs((iplen/sr)+i(kDelayOS)) 	;DELAY THE INPUT SOUND ACCORDING TO THE BUFFER SIZE
         
         ;BACKWARDS REVERB
         elseif kFwdBwd==1&&kresize==0 then
 	 aL,aR	ftconv	ainMix, irev, iplen, iskipsamples, iirlen				;CONVOLUTE INPUT SOUND
 	 adelL	delay	ainL,abs((iplen/sr)+(iirlen/sr)-(iskipsamples/sr)+i(kDelayOS))	;DELAY THE INPUT SOUND ACCORDING TO THE BUFFER SIZE AND THE DURATION OF THE IMPULSE FILE
-	 adelR	delay	ainL,abs((iplen/sr)+(iirlen/sr)-(iskipsamples/sr)+i(kDelayOS))	;DELAY THE INPUT SOUND ACCORDING TO THE BUFFER SIZE AND THE DURATION OF THE IMPULSE FILE
+	 adelR	delay	ainR,abs((iplen/sr)+(iirlen/sr)-(iskipsamples/sr)+i(kDelayOS))	;DELAY THE INPUT SOUND ACCORDING TO THE BUFFER SIZE AND THE DURATION OF THE IMPULSE FILE
         
         ;FORWARDS COMPRESSED
 	elseif kFwdBwd==0&&kresize==1 then
 	 aL,aR	ftconv	ainMix, icomp, iplen,iskipsamples, iirlen*i(kCompRat)		;CONVOLUTE INPUT SOUND
 	 adelL	delay	ainL, abs((iplen/sr)+i(kDelayOS)) 				;DELAY THE INPUT SOUND ACCORDING TO THE BUFFER SIZE
-	 adelR	delay	ainL, abs((iplen/sr)+i(kDelayOS)) 				;DELAY THE INPUT SOUND ACCORDING TO THE BUFFER SIZE
+	 adelR	delay	ainR, abs((iplen/sr)+i(kDelayOS)) 				;DELAY THE INPUT SOUND ACCORDING TO THE BUFFER SIZE
         
         ;BACKWARDS COMPRESSED
 	elseif kFwdBwd==1&&kresize==1 then
 	 aL,aR	ftconv	ainMix, icomprev, iplen, iskipsamples, iirlen*i(kCompRat)		;CONVOLUTE INPUT SOUND
 	 adelL	delay	ainL,abs((iplen/sr)+((iirlen*i(kCompRat))/sr)-(iskipsamples/sr)+i(kDelayOS))	;DELAY THE INPUT SOUND ACCORDING TO THE BUFFER SIZE AND THE DURATION OF THE IMPULSE FILE
-	 adelR	delay	ainL,abs((iplen/sr)+((iirlen*i(kCompRat))/sr)-(iskipsamples/sr)+i(kDelayOS))	;DELAY THE INPUT SOUND ACCORDING TO THE BUFFER SIZE AND THE DURATION OF THE IMPULSE FILE
+	 adelR	delay	ainR,abs((iplen/sr)+((iirlen*i(kCompRat))/sr)-(iskipsamples/sr)+i(kDelayOS))	;DELAY THE INPUT SOUND ACCORDING TO THE BUFFER SIZE AND THE DURATION OF THE IMPULSE FILE
 	endif
                  
         rireturn
@@ -210,7 +214,8 @@ instr	2	;CONVOLUTION REVERB INSTRUMENT
 	; CREATE A DRY/WET MIX
 	aMixL	ntrpol	adelL,aL*0.1,kmix
 	aMixR	ntrpol	adelR,aR*0.1,kmix
-        	outs	aMixL*klevel,aMixR*klevel
+	
+   	outs	aMixL*klevel,aMixR*klevel
 
 endin
 
